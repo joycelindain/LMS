@@ -5,12 +5,15 @@ using System.Web;
 using MT.LMS.Web.Interface;
 using MT.LMS.Web.Models;
 using System.Data.Entity;
+using System.Configuration;
+using System.Data.SqlClient;
+
 namespace MT.LMS.Web.Repository
 {
     public class UserRepository : IUserRepository
     {
         private LMSDBContext _dbContext;
-
+        private static string ConnString = ConfigurationManager.ConnectionStrings["LoanInquiryDBContext"].ConnectionString;
         public UserRepository(LMSDBContext userContext)
         {
             _dbContext = userContext;
@@ -80,6 +83,27 @@ namespace MT.LMS.Web.Repository
         {
             return _dbContext.Users.Find(userID);
         }
+
+        public void RegisterUsers(string username, string hash, byte[] salt, string userType)
+        {
+            SqlConnection con = new SqlConnection(ConnString);
+            using (SqlCommand cmd = new SqlCommand("EXEC REGISTER_USER @USERNAME,@PASSWORD,@POSITION,@BRANCHCODE,@USERTYPE,@SALT", con))
+            {
+                cmd.Parameters.AddWithValue("@USERNAME", username);
+                cmd.Parameters.AddWithValue("@PASSWORD", hash);
+                cmd.Parameters.AddWithValue("@USERTYPE", userType);
+                cmd.Parameters.AddWithValue("@SALT", salt);
+
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+        }
+
+        
+       
+
+
         #endregion
 
 

@@ -243,57 +243,6 @@ namespace MT.LMS.Web.Controllers
             {
                 throw;
             }
-            //string OldHASHValue = string.Empty;
-            //byte[] SALT = new byte[saltLengthLimit];
-
-            //try
-            //{                
-            //        // Ensure we have a valid viewModel to work with
-            //        if (!ModelState.IsValid)
-            //    {
-            //        //Retrive Stored HASH Value From Database According To Username (one unique field)
-            //        var userInfo = _userRepository.GetUserByID(entity.Username);
-
-            //        //Assign HASH Value
-            //        if (userInfo != null)
-            //        {
-            //            OldHASHValue = userInfo.HASH;
-            //            SALT = userInfo.SALT;
-            //            bool isLogin = CompareHashValue(entity.Password, entity.Username, OldHASHValue, SALT);
-            //            if (isLogin)
-            //            {
-            //                //Login Success
-            //                //For Set Authentication in Cookie (Remeber ME Option)
-            //                SignInRemember(entity.Username, entity.isRemember);
-
-            //                //Set A Unique ID in session
-            //                Session["UserID"] = userInfo.UserName;
-
-            //                // If we got this far, something failed, redisplay form
-            //                // return RedirectToAction("Index", "Dashboard");
-            //                return RedirectToLocal(entity.ReturnURL);
-            //            }
-            //            else
-            //            {
-            //                //Login Fail
-            //                TempData["ErrorMSG"] = "Access Denied! Wrong Credential";
-            //                return View(entity);
-            //            }
-
-            //    }
-
-
-            //    else
-            //    {
-            //        ModelState.AddModelError("", "Login data is incorrect!");
-            //        return View(entity.ReturnURL);
-            //    }  
-            //}
-            //catch
-            //{
-            //    throw;
-            //}
-
         }
         
 
@@ -439,6 +388,51 @@ namespace MT.LMS.Web.Controllers
                 throw;
             }
         }
+        #endregion
+        #region Register
+        // GET: /User/SignUp
+        [HttpGet]
+        public ActionResult SignUp(string returnUrl)
+        {
+            var userinfo = new RegisterUserViewModel();
+
+            try
+            {   
+                return View(userinfo);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignUp(RegisterUserViewModel entity)
+        {
+            string OldHASHValue = string.Empty;
+            byte[] SALT = new byte[saltLengthLimit];
+
+            try
+            {
+                // Ensure we have a valid viewModel to work with
+                if (!ModelState.IsValid)
+                    return View(entity);
+
+                SALT = Get_SALT();
+                string expectedHashString = Get_HASH_SHA512(entity.UserPassword, entity.UserName, SALT);
+
+               
+                _userRepository.RegisterUsers(entity.UserName,expectedHashString,SALT,entity.UserType);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+
         #endregion
 
     }

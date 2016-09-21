@@ -15,5 +15,7 @@ namespace MT.LMS.Web.Interface
         void DeleteUser(string userID);
         void UpdateUser(User user);
         void Save();
+        void RegisterUsers(string username, string hash, byte[] salt, string userType);
+        
     }
 }

@@ -1,0 +1,56 @@
+﻿@model MT.LMS.Web.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Log in";
+}
+
+<!DOCTYPE html>
+<div class="wrapper">
+    @using (Html.BeginForm("Login", "Users", FormMethod.Post, new { @class = "form-horizontal form-signin", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(s => s.ReturnURL)
+
+        @*<h1>Login Functionality In MVC</h1>
+        <div>
+            @if (TempData["ErrorMSG"] != null)
+            {
+                <label style="color:maroon;"> @TempData["ErrorMSG"] </label>
+                <br /><br />
+            }
+
+            @Html.TextBoxFor(s => s.Username, new { @placeholder = "Username" })
+            <br /> <br />
+            @Html.PasswordFor(s => s.Password, new { @placeholder = "Password" })
+            <br /> <br />
+            @Html.CheckBoxFor(s => s.isRemember) Remember ME
+            <br /> <br />
+            <button type="submit">Login</button>
+        </div>*@
+        
+        <section id="loginForm">
+            <h2 class="form-signin-heading">Please Sign in.</h2>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Username" })
+            @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+            
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+           
+            <input type="submit" value="Sign in" class="btn btn-lg btn-primary btn-block btn-success " />
+            
+
+
+        </section>
+    }   
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+

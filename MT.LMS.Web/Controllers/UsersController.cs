@@ -197,9 +197,9 @@ namespace MT.LMS.Web.Controllers
 
             try
             {                
-                    // Ensure we have a valid viewModel to work with
-                    if (!ModelState.IsValid)
-                        return View(entity);
+                // Ensure we have a valid viewModel to work with
+                if (!ModelState.IsValid)
+                    return View(entity);
 
                 //Retrive Stored HASH Value From Database According To Username (one unique field)
                 var userInfo = _userRepository.GetUserByID(entity.Username);
@@ -209,7 +209,9 @@ namespace MT.LMS.Web.Controllers
                     {
                         OldHASHValue = userInfo.HASH;
                         SALT = userInfo.SALT;
+
                     bool isLogin = CompareHashValue(entity.Password, entity.Username, OldHASHValue, SALT);
+
                     if (isLogin)
                     {
                         //Login Success
@@ -234,12 +236,63 @@ namespace MT.LMS.Web.Controllers
                 {
                     ModelState.AddModelError("", "Login data is incorrect!");
                     return View(entity.ReturnURL);
-                }  
+                }
+
             }
             catch
             {
                 throw;
             }
+            //string OldHASHValue = string.Empty;
+            //byte[] SALT = new byte[saltLengthLimit];
+
+            //try
+            //{                
+            //        // Ensure we have a valid viewModel to work with
+            //        if (!ModelState.IsValid)
+            //    {
+            //        //Retrive Stored HASH Value From Database According To Username (one unique field)
+            //        var userInfo = _userRepository.GetUserByID(entity.Username);
+
+            //        //Assign HASH Value
+            //        if (userInfo != null)
+            //        {
+            //            OldHASHValue = userInfo.HASH;
+            //            SALT = userInfo.SALT;
+            //            bool isLogin = CompareHashValue(entity.Password, entity.Username, OldHASHValue, SALT);
+            //            if (isLogin)
+            //            {
+            //                //Login Success
+            //                //For Set Authentication in Cookie (Remeber ME Option)
+            //                SignInRemember(entity.Username, entity.isRemember);
+
+            //                //Set A Unique ID in session
+            //                Session["UserID"] = userInfo.UserName;
+
+            //                // If we got this far, something failed, redisplay form
+            //                // return RedirectToAction("Index", "Dashboard");
+            //                return RedirectToLocal(entity.ReturnURL);
+            //            }
+            //            else
+            //            {
+            //                //Login Fail
+            //                TempData["ErrorMSG"] = "Access Denied! Wrong Credential";
+            //                return View(entity);
+            //            }
+
+            //    }
+
+
+            //    else
+            //    {
+            //        ModelState.AddModelError("", "Login data is incorrect!");
+            //        return View(entity.ReturnURL);
+            //    }  
+            //}
+            //catch
+            //{
+            //    throw;
+            //}
 
         }
         
